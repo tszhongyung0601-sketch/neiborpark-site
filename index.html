@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>鄰停車位共享 — 社區裡空著的車位，借給同一棟的鄰居</title>
+<meta name="description" content="鄰停是社區內部的車位媒合與對帳工具。車主開放用不到的時段，管委會審核過的鄰居才借得到，用完現金投信箱、雙方按確認。平台不經手住戶之間的金流。">
+<meta name="theme-color" content="#0C2340">
+<link rel="icon" href="logo2.png">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:title" content="鄰停車位共享 — 社區車位共享平台">
+<meta property="og:description" content="車主開放用不到的時段，鄰居在看板上申請，用完現金投信箱、雙方按確認。平台不經手住戶之間的金流。">
+<meta property="og:image" content="logo2.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
+
+<style>
+/* ─────────────────────────────────────────────
+   鄰停車位共享 · 形象頁
+   深藍＝制度與信任，暖黃＝行動，薄荷＝已完成（取自 logo 漸層）
+   ───────────────────────────────────────────── */
+:root{
+  color-scheme: light;
+
+  --navy:      #0C2340;
+  --navy-2:    #143A63;
+  --navy-soft: #1D4E82;
+
+  --amber:     #FFC53D;
+  --amber-2:   #F0A81E;
+  --amber-ink: #4A3200;
+
+  --mint:      #3FBF96;
+  --mint-soft: #E4F6EF;
+
+  --ink:       #14202E;
+  --ink-2:     #4C5A6B;
+  --ink-3:     #7C8898;
+
+  --paper:     #FBF9F5;
+  --surface:   #FFFFFF;
+  --surface-2: #F3F0E9;
+  --line:      #E6E0D4;
+  --line-soft: #F0ECE3;
+
+  --serif: "Noto Serif TC", Georgia, "Songti TC", "PMingLiU", serif;
+  --sans:  "Noto Sans TC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+           "PingFang TC", "Microsoft JhengHei", sans-serif;
+
+  --wide: 1140px;
+  --r:    18px;
+  --shadow-sm: 0 1px 2px rgba(12,35,64,.06), 0 4px 14px rgba(12,35,64,.05);
+  --shadow-md: 0 2px 6px rgba(12,35,64,.07), 0 18px 44px rgba(12,35,64,.10);
+  --shadow-lg: 0 30px 80px rgba(4,16,32,.42);
+}
+
+*,*::before,*::after{ box-sizing:border-box }
+html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth }
+@media (prefers-reduced-motion:reduce){ html{ scroll-behavior:auto } }
+
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16.5px;
+  line-height:1.75;
+  letter-spacing:.01em;
+  -webkit-font-smoothing:antialiased;
+}
+img{ max-width:100%; height:auto; display:block }
+a{ color:inherit }
+h1,h2,h3{ font-family:var(--serif); font-weight:700; line-height:1.32; letter-spacing:.005em; margin:0 }
+p{ margin:0 }
+.num{ font-variant-numeric:tabular-nums }
+
+.wrap{ width:100%; max-width:var(--wide); margin-inline:auto; padding-inline:24px }
+section[id]{ scroll-margin-top:76px }
+
+/* ── 標題群組 ─────────────────────────────── */
+.eyebrow{
+  font-size:12.5px; font-weight:700; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--amber-2);
+}
+.eyebrow.on-light{ color:#B07C00 }
+.h2{ font-size:clamp(26px,3.4vw,38px) }
+.lede{ font-size:clamp(16px,1.5vw,18.5px); color:var(--ink-2); max-width:62ch }
+.sec-head{ margin-bottom:44px }
+.sec-head .eyebrow{ display:block; margin-bottom:12px }
+.sec-head .lede{ margin-top:16px }
+
+/* ── 按鈕 ─────────────────────────────────── */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  padding:14px 26px; border-radius:999px; border:1px solid transparent;
+  font-family:var(--sans); font-size:16px; font-weight:700; line-height:1.2;
+  text-decoration:none; cursor:pointer; white-space:nowrap;
+  transition:transform .16s ease, box-shadow .16s ease, background-color .16s ease;
+}
+.btn:active{ transform:translateY(1px) }
+.btn-primary{
+  background:linear-gradient(180deg,var(--amber) 0%,var(--amber-2) 100%);
+  color:var(--amber-ink);
+  box-shadow:0 1px 0 rgba(255,255,255,.5) inset, 0 10px 26px rgba(240,168,30,.34);
+}
+.btn-primary:hover{ box-shadow:0 1px 0 rgba(255,255,255,.5) inset, 0 14px 34px rgba(240,168,30,.44) }
+.btn-ghost{ background:transparent; color:#EAF1F8; border-color:rgba(234,241,248,.34) }
+.btn-ghost:hover{ background:rgba(234,241,248,.10); border-color:rgba(234,241,248,.6) }
+.btn-outline{ background:var(--surface); color:var(--navy); border-color:var(--line) }
+.btn-outline:hover{ border-color:var(--navy-soft) }
+.btn-sm{ padding:10px 18px; font-size:14.5px }
+
+/* ── 頁首 ─────────────────────────────────── */
+.top{
+  position:sticky; top:0; z-index:50;
+  background:rgba(12,35,64,.90);
+  backdrop-filter:saturate(150%) blur(12px);
+  -webkit-backdrop-filter:saturate(150%) blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.10);
+}
+.top-in{ display:flex; align-items:center; gap:20px; height:64px }
+.brand{ display:flex; align-items:center; gap:11px; text-decoration:none; margin-right:auto }
+.brand img{ width:34px; height:34px; border-radius:9px }
+.brand b{ font-family:var(--serif); font-size:17.5px; color:#fff; font-weight:700; letter-spacing:.02em }
+.brand span{ display:block; font-size:11px; color:#95AEC8; letter-spacing:.1em; line-height:1.2 }
+.top nav{ display:flex; gap:26px }
+.top nav a{
+  font-size:14.5px; color:#C2D2E2; text-decoration:none; font-weight:500;
+  padding-block:6px; border-bottom:2px solid transparent; transition:color .15s, border-color .15s;
+}
+.top nav a:hover{ color:#fff; border-bottom-color:var(--amber) }
+@media (max-width:900px){ .top nav{ display:none } }
+
+/* ── Hero ─────────────────────────────────── */
+.hero{
+  position:relative; overflow:hidden;
+  background:
+    radial-gradient(1100px 620px at 82% -6%, rgba(63,191,150,.20), transparent 62%),
+    radial-gradient(900px 560px at 6% 108%, rgba(255,197,61,.14), transparent 60%),
+    linear-gradient(168deg, #0E2A4C 0%, var(--navy) 52%, #081A31 100%);
+  color:#EAF1F8;
+}
+/* 停車格線：低調的紋理，不是裝飾圖案 */
+.hero::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:repeating-linear-gradient(96deg,
+    rgba(255,255,255,.055) 0 1px, transparent 1px 128px);
+  mask-image:linear-gradient(to bottom, transparent, #000 22%, #000 72%, transparent);
+  -webkit-mask-image:linear-gradient(to bottom, transparent, #000 22%, #000 72%, transparent);
+}
+.hero-in{
+  position:relative; display:grid; gap:56px; align-items:center;
+  grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);
+  padding-block:clamp(64px,8vw,104px) clamp(72px,9vw,116px);
+}
+@media (max-width:940px){
+  .hero-in{ grid-template-columns:1fr; gap:48px; padding-block:56px 64px }
+}
+.hero h1{
+  font-size:clamp(27.5px,4.35vw,50px); line-height:1.28; color:#fff;
+  margin-block:16px 22px; letter-spacing:-.005em;
+}
+.hero h1 em{ font-style:normal; color:var(--amber) }
+.nb{ white-space:nowrap }
+.hero-lede{ font-size:clamp(16px,1.65vw,19px); color:#BFD2E4; max-width:36em; line-height:1.85 }
+.hero-lede strong{ color:#fff; font-weight:700; box-shadow:inset 0 -.5em 0 rgba(63,191,150,.28) }
+.hero-cta{ display:flex; flex-wrap:wrap; gap:12px; margin-top:32px }
+
+.chips{ display:flex; flex-wrap:wrap; gap:10px; margin-top:34px }
+.chip{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:7px 14px 7px 11px; border-radius:999px;
+  background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.14);
+  font-size:13.5px; color:#D7E4F1; font-weight:500;
+}
+.chip svg{ width:15px; height:15px; flex:none; color:var(--mint) }
+
+/* 手機示意 */
+.phone-stage{ display:flex; justify-content:center; perspective:1400px }
+.phone{
+  width:min(320px,100%); border-radius:38px; padding:11px;
+  background:linear-gradient(160deg,#33465C,#16202D 60%);
+  box-shadow:var(--shadow-lg), 0 0 0 1px rgba(255,255,255,.10) inset;
+  transform:rotate(-1.6deg);
+}
+.screen{ background:var(--paper); border-radius:29px; overflow:hidden; color:var(--ink) }
+.screen-top{
+  background:var(--surface); padding:16px 17px 13px; border-bottom:1px solid var(--line-soft);
+}
+.screen-top h4{ margin:0; font-family:var(--serif); font-size:16px; color:var(--navy) }
+.slider{ margin-top:13px }
+.slider-row{ display:flex; justify-content:space-between; align-items:baseline; font-size:11.5px; color:var(--ink-3) }
+.slider-row b{ color:var(--navy); font-size:13px; font-weight:700 }
+.track{ height:5px; border-radius:99px; background:var(--surface-2); margin-top:8px; position:relative }
+.track i{ position:absolute; inset:0 42% 0 0; border-radius:99px; background:var(--navy-soft) }
+.track u{
+  position:absolute; left:58%; top:50%; width:15px; height:15px; margin:-7.5px 0 0 -7.5px;
+  border-radius:50%; background:#fff; border:3px solid var(--navy-soft);
+  box-shadow:0 2px 6px rgba(12,35,64,.28);
+}
+.screen-body{ padding:13px 17px 18px; display:grid; gap:10px }
+.slot{
+  background:var(--surface); border:1px solid var(--line-soft); border-radius:14px;
+  padding:13px 14px; box-shadow:0 1px 2px rgba(12,35,64,.04);
+}
+.slot-head{ display:flex; align-items:center; justify-content:space-between; gap:8px }
+.slot-head b{ font-size:15.5px; font-weight:700; color:var(--ink); letter-spacing:.02em }
+.price{ font-size:15px; font-weight:700; color:var(--navy); font-variant-numeric:tabular-nums }
+.price.free{ color:var(--mint) }
+.slot-meta{ margin-top:4px; font-size:12.5px; color:var(--ink-3); font-variant-numeric:tabular-nums }
+.slot-act{
+  margin-top:11px; display:block; text-align:center; padding:8px; border-radius:9px;
+  background:var(--navy); color:#fff; font-size:13.5px; font-weight:700;
+}
+.slot-act.alt{ background:var(--surface-2); color:var(--navy) }
+.demo-tag{
+  display:flex; align-items:center; gap:7px; padding:9px 12px; border-radius:11px;
+  background:#EAF1F8; border:1px solid #D3E1EE; color:#31536F; font-size:12px; line-height:1.5;
+}
+.demo-tag svg{ width:14px; height:14px; flex:none }
+
+/* ── 一句話定義帶 ─────────────────────────── */
+.oneline{ background:var(--surface); border-bottom:1px solid var(--line) }
+.oneline-in{
+  display:flex; flex-wrap:wrap; align-items:center; gap:14px 22px; padding-block:26px;
+  font-size:clamp(16px,1.75vw,20px); font-family:var(--serif); font-weight:600; color:var(--navy);
+}
+.oneline-in span{ font-family:var(--sans); font-weight:500; font-size:14.5px; color:var(--ink-2); line-height:1.7 }
+.oneline mark{ background:linear-gradient(transparent 62%, rgba(255,197,61,.55) 0); color:inherit; padding-inline:2px }
+
+/* ── 版塊 ─────────────────────────────────── */
+.band{ padding-block:clamp(64px,7.5vw,102px) }
+.band-paper{ background:var(--paper) }
+.band-white{ background:var(--surface); border-block:1px solid var(--line) }
+.band-navy{
+  background:
+    radial-gradient(800px 460px at 88% 4%, rgba(63,191,150,.16), transparent 60%),
+    linear-gradient(172deg,#0E2A4C,#0A1E38);
+  color:#EAF1F8;
+}
+.band-navy .h2{ color:#fff }
+.band-navy .lede{ color:#BFD2E4 }
+
+/* ── 痛點三格 ─────────────────────────────── */
+.grid-3{ display:grid; gap:22px; grid-template-columns:repeat(3,1fr) }
+@media (max-width:880px){ .grid-3{ grid-template-columns:1fr } }
+
+.pain{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+  padding:28px 26px 30px; box-shadow:var(--shadow-sm);
+}
+.pain .ic{
+  width:44px; height:44px; border-radius:12px; display:grid; place-items:center;
+  background:var(--surface-2); color:var(--navy-soft); margin-bottom:18px;
+}
+.pain .ic svg{ width:23px; height:23px }
+.pain h3{ font-size:19px; color:var(--navy); margin-bottom:10px }
+.pain p{ font-size:15px; color:var(--ink-2); line-height:1.85 }
+
+/* ── 四步驟 ───────────────────────────────── */
+.steps{ display:grid; gap:0; grid-template-columns:repeat(4,1fr); counter-reset:s }
+@media (max-width:980px){ .steps{ grid-template-columns:repeat(2,1fr) } }
+@media (max-width:600px){ .steps{ grid-template-columns:1fr } }
+.step{ position:relative; padding:0 26px 6px 0 }
+.step:last-child{ padding-right:0 }
+.step .no{
+  font-family:var(--serif); font-size:15px; font-weight:700; color:var(--navy);
+  width:38px; height:38px; border-radius:50%; display:grid; place-items:center;
+  background:var(--amber); position:relative; z-index:2;
+  box-shadow:0 4px 12px rgba(240,168,30,.34);
+}
+.step .rail{
+  position:absolute; left:38px; top:18px; right:0; height:2px;
+  background:repeating-linear-gradient(90deg,var(--line) 0 6px, transparent 6px 12px);
+}
+.step:last-child .rail{ display:none }
+@media (max-width:980px){ .step:nth-child(2) .rail{ display:none } }
+@media (max-width:600px){ .step .rail{ display:none } .step{ padding-right:0; padding-bottom:26px } }
+.step h3{ font-size:18.5px; color:var(--navy); margin:20px 0 9px }
+.step p{ font-size:14.8px; color:var(--ink-2); line-height:1.85; padding-right:6px }
+
+/* ── 錢怎麼算 ─────────────────────────────── */
+.money{ display:grid; gap:20px; grid-template-columns:repeat(3,1fr); margin-top:8px }
+@media (max-width:880px){ .money{ grid-template-columns:1fr } }
+.mcard{
+  background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.14);
+  border-radius:var(--r); padding:26px 24px 28px;
+}
+.mcard .who{
+  display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:700;
+  letter-spacing:.1em; color:#9DBBD6; text-transform:uppercase; margin-bottom:16px;
+}
+.mcard .ic{
+  width:46px; height:46px; border-radius:13px; display:grid; place-items:center;
+  background:rgba(255,197,61,.14); color:var(--amber); margin-bottom:16px;
+}
+.mcard .ic svg{ width:24px; height:24px }
+.mcard h3{ font-size:19px; color:#fff; margin-bottom:9px }
+.mcard p{ font-size:14.8px; color:#B7CBDF; line-height:1.85 }
+.money-note{
+  margin-top:26px; padding:20px 24px; border-radius:14px;
+  background:rgba(63,191,150,.10); border:1px solid rgba(63,191,150,.28);
+  font-size:15px; color:#CFE6DC; line-height:1.85;
+}
+.money-note b{ color:#fff }
+
+/* ── 三種身分 ─────────────────────────────── */
+.role{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+  padding:0; overflow:hidden; box-shadow:var(--shadow-sm); display:flex; flex-direction:column;
+}
+.role-top{ padding:24px 26px 20px; background:var(--surface-2); border-bottom:1px solid var(--line) }
+.role-top h3{ font-size:20px; color:var(--navy) }
+.role-top p{ font-size:13.5px; color:var(--ink-3); margin-top:4px }
+.role ul{ list-style:none; margin:0; padding:22px 26px 26px; display:grid; gap:13px }
+.role li{ display:flex; gap:11px; font-size:15px; color:var(--ink-2); line-height:1.75 }
+.role li svg{ width:18px; height:18px; flex:none; margin-top:4px; color:var(--mint) }
+
+/* ── FAQ ──────────────────────────────────── */
+.faq{ max-width:820px; margin-inline:auto; border-top:1px solid var(--line) }
+.faq details{ border-bottom:1px solid var(--line) }
+.faq summary{
+  list-style:none; cursor:pointer; padding:22px 44px 22px 0; position:relative;
+  font-family:var(--serif); font-weight:600; font-size:18px; color:var(--navy); line-height:1.55;
+}
+.faq summary::-webkit-details-marker{ display:none }
+.faq summary::after{
+  content:""; position:absolute; right:8px; top:31px; width:11px; height:11px;
+  border-right:2px solid var(--ink-3); border-bottom:2px solid var(--ink-3);
+  transform:rotate(45deg); transition:transform .2s ease;
+}
+.faq details[open] summary::after{ transform:rotate(-135deg); top:34px }
+.faq summary:hover{ color:var(--navy-soft) }
+.faq .a{ padding:0 44px 24px 0; font-size:15.5px; color:var(--ink-2); line-height:1.9 }
+.faq .a strong{ color:var(--ink); font-weight:700 }
+
+/* ── 結尾 CTA ─────────────────────────────── */
+.close-in{ text-align:center; max-width:680px; margin-inline:auto }
+.close-in .h2{ margin-bottom:18px }
+.close-in .lede{ margin-inline:auto; text-align:center }
+.close-cta{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:34px }
+.close-sub{ margin-top:20px; font-size:13.5px; color:#8FA9C2 }
+
+/* ── 頁尾 ─────────────────────────────────── */
+.foot{ background:#081A31; color:#8FA9C2; padding-block:44px 40px; font-size:14px }
+.foot-in{ display:flex; flex-wrap:wrap; gap:24px 40px; align-items:flex-start }
+.foot .brand b{ font-size:16px }
+.foot-links{ display:flex; flex-wrap:wrap; gap:8px 22px; margin-left:auto }
+.foot-links a{ color:#B7CBDF; text-decoration:none }
+.foot-links a:hover{ color:#fff; text-decoration:underline }
+.foot-note{
+  width:100%; margin-top:28px; padding-top:22px; border-top:1px solid rgba(255,255,255,.10);
+  font-size:12.5px; color:#6D869E; line-height:1.8;
+}
+
+/* ── 進場動畫 ─────────────────────────────── */
+.rise{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease }
+.rise.in{ opacity:1; transform:none }
+@media (prefers-reduced-motion:reduce){ .rise{ opacity:1; transform:none; transition:none } }
+</style>
+</head>
+<body>
+
+<!-- ══ 頁首 ══════════════════════════════════════════════ -->
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="#top">
+      <img src="logo2.png" alt="">
+      <span style="display:block">
+        <b>鄰停車位共享</b>
+        <span>NEIBORPARK</span>
+      </span>
+    </a>
+    <nav>
+      <a href="#how">怎麼運作</a>
+      <a href="#money">錢怎麼算</a>
+      <a href="#roles">誰會用到</a>
+      <a href="#faq">常見問題</a>
+    </nav>
+    <a class="btn btn-primary btn-sm" href="https://line.me/R/ti/p/@694embuk" target="_blank" rel="noopener">加 LINE 詢問</a>
+  </div>
+</header>
+
+<!-- ══ Hero ═════════════════════════════════════════════ -->
+<main id="top">
+<section class="hero">
+  <div class="wrap hero-in">
+
+    <div>
+      <p class="eyebrow">社區內部 · 車位共享</p>
+      <h1>白天空著的那個車位，<br>晚上有人正在繞<span class="nb"><em>第三圈</em>。</span></h1>
+      <p class="hero-lede">
+鄰停讓車主把用不到的時段開放出來，管委會審核過的鄰居在看板上看到、送出申請。用完之後 App 算出金額、指出投到哪一個信箱，兩邊各按一次確認。<strong>錢是鄰居之間的現金，平台不經手。</strong>
+      </p>
+
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="https://line.me/R/ti/p/@694embuk" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="19" height="19" aria-hidden="true"><path d="M12 2C6.5 2 2 5.6 2 10c0 3.9 3.5 7.2 8.2 7.9.3.07.75.22.86.5.1.26.07.66.03.92l-.14.83c-.04.25-.2.97.85.53s5.62-3.3 7.67-5.66C20.83 13.5 22 11.9 22 10c0-4.4-4.5-8-10-8Z"/></svg>
+          加入 LINE 官方帳號詢問
+        </a>
+        <a class="btn btn-ghost" href="https://neiborpark.pages.dev/" target="_blank" rel="noopener">看住戶端實際畫面 →</a>
+      </div>
+
+      <div class="chips">
+        <span class="chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          LINE 登入，不用另外下載 App
+        </span>
+        <span class="chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          管委會審核過的住戶才進得來
+        </span>
+        <span class="chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          平台不碰住戶之間的金流
+        </span>
+      </div>
+    </div>
+
+    <!-- 住戶端示意 -->
+    <div class="phone-stage">
+      <div class="phone" role="img" aria-label="住戶端「即時車位看板」畫面示意：拖動時間到今晚 21:00，看板上出現兩個可借車位。">
+        <div class="screen">
+          <div class="screen-top">
+            <h4>即時車位看板</h4>
+            <div class="slider">
+              <div class="slider-row"><span>查詢時段</span><b class="num">今晚 21:00</b></div>
+              <div class="track"><i></i><u></u></div>
+            </div>
+          </div>
+          <div class="screen-body">
+            <div class="slot">
+              <div class="slot-head"><b>B2-15</b><span class="price num">NT$40</span></div>
+              <div class="slot-meta">A棟 302 · 今日 19:00–23:00 · 步行 1 分</div>
+              <span class="slot-act">申請借用</span>
+            </div>
+            <div class="slot">
+              <div class="slot-head"><b>B1-08</b><span class="price free">免費</span></div>
+              <div class="slot-meta">C棟 1104 · 今日 18:00–翌日 08:00</div>
+              <span class="slot-act alt">申請借用</span>
+            </div>
+            <div class="demo-tag">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.6v.1"/></svg>
+畫面為示範資料。社區還沒有人釋出車位時，看板也會這樣先給你看。
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ 一句話 ═══════════════════════════════════════════ -->
+<div class="oneline">
+  <div class="wrap oneline-in">
+    <p>鄰停是社區內部的<mark>車位媒合與對帳工具</mark>，不是金流平台。</p>
+    <span>平台只跟管委會收訂閱費，住戶之間的現金往來完全不經手、不抽成、不代收。</span>
+  </div>
+</div>
+
+<!-- ══ 痛點 ═════════════════════════════════════════════ -->
+<section class="band band-paper">
+  <div class="wrap">
+    <div class="sec-head rise">
+      <span class="eyebrow on-light">現況</span>
+      <h2 class="h2">車位不夠，其實常常不是車位不夠</h2>
+      <p class="lede">是空著的時段沒人知道、借了的紀錄沒地方存、喬過的事沒人記得。這三件事每個社區都在發生，只是都在 LINE 群組裡。</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="pain rise">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 17V7h3.5a3.2 3.2 0 0 1 0 6.4H9"/></svg>
+        </div>
+        <h3>白天空著，晚上不夠</h3>
+        <p>上班的人把車開走，位子空一整天；晚班回家的人在地下室繞第三圈。空間一直都在，只是沒有人知道它什麼時候是空的。</p>
+      </div>
+
+      <div class="pain rise">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.9-.9L3 20.5l1.5-4.6A8.3 8.3 0 0 1 3.6 11.5 8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"/></svg>
+        </div>
+        <h3>誰借誰、付了沒，往上滑</h3>
+        <p>借用談在群組裡、金額算在腦子裡、有沒有付憑印象。月底對不起來，就變成一筆誰都不好意思開口的人情帳。</p>
+      </div>
+
+      <div class="pain rise">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3.1a4 4 0 0 1 0 7.7M22 21v-1.9a4 4 0 0 0-3-3.8"/><circle cx="9.5" cy="7" r="4"/><path d="M2 21v-1.9A4 4 0 0 1 6 15h7a4 4 0 0 1 4 4.1V21"/></svg>
+        </div>
+        <h3>管委會變成人工排程系統</h3>
+        <p>訪客車位靠喬、臨停靠問、誰有優先權靠記得。事情喬完沒有留下紀錄，下一次還是得從頭喬一次。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 怎麼運作 ═════════════════════════════════════════ -->
+<section class="band band-white" id="how">
+  <div class="wrap">
+    <div class="sec-head rise">
+      <span class="eyebrow on-light">怎麼運作</span>
+      <h2 class="h2">四個動作，一趟借還就跑完了</h2>
+      <p class="lede">全程在 LINE 與網頁上完成。住戶不用學新東西，管委會不用當中間人。</p>
+    </div>
+
+    <div class="steps">
+      <div class="step rise">
+        <div class="rail"></div>
+        <div class="no">01</div>
+        <h3>車主開放時段</h3>
+        <p>登錄自己的車位之後，選一段用不到的時間放出來。可以是今天晚上，也可以是每週一到五的白天。</p>
+      </div>
+      <div class="step rise">
+        <div class="rail"></div>
+        <div class="no">02</div>
+        <h3>鄰居在看板上看到</h3>
+        <p>即時車位看板只顯示現在真的借得到的時段。拖動時間軸，就能查「今晚 21:00 有沒有位子」。</p>
+      </div>
+      <div class="step rise">
+        <div class="rail"></div>
+        <div class="no">03</div>
+        <h3>送出申請，LINE 通知</h3>
+        <p>車主收到 LINE 通知決定要不要借出。核准與到期會再通知一次，兩邊都不必一直開著網頁等。</p>
+      </div>
+      <div class="step rise">
+        <div class="no">04</div>
+        <h3>現金投信箱，雙方確認</h3>
+        <p>App 算出這次該付多少、指出投進哪一個信箱。借用人標記「已投現金」，車主確認「已收款」。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 錢怎麼算 ═════════════════════════════════════════ -->
+<section class="band band-navy" id="money">
+  <div class="wrap">
+    <div class="sec-head rise">
+      <span class="eyebrow">錢怎麼算</span>
+      <h2 class="h2">錢從鄰居手上到鄰居信箱，中間沒有平台</h2>
+      <p class="lede">這是鄰停最該講清楚的一件事。住戶之間走的是線下現金——同一個社區，走幾步就到的距離。平台的工作是把金額算對、把去向講明、把兩邊的確認留下來。</p>
+    </div>
+
+    <div class="money">
+      <div class="mcard rise">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2.5" width="16" height="19" rx="2.6"/><path d="M8 6.5h8M8 11h2M12 11h2M16 11h.5M8 15h2M12 15h2M16 15v3.5M8 18.5h6"/></svg>
+        </div>
+        <div class="who">App 負責</div>
+        <h3>算出該付多少</h3>
+        <p>依實際使用時數與社區設定的費率計算，畫面上直接列出明細。金額不用兩個人在群組裡各按各的計算機。</p>
+      </div>
+
+      <div class="mcard rise">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5A3.5 3.5 0 0 1 6.5 7h11A3.5 3.5 0 0 1 21 10.5V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-8.5Z"/><path d="M12 7v13M6.5 11.5h2M17 3v4"/></svg>
+        </div>
+        <div class="who">住戶負責</div>
+        <h3>現金投進車主信箱</h3>
+        <p>畫面會寫出投到哪一戶的信箱（例如 A棟 302）。同一個社區的鄰居，這一步本來就辦得到。</p>
+      </div>
+
+      <div class="mcard rise">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 13.2 6 16.7 12.6 10"/><path d="M11 16.7 14.5 20 22 12.4"/><path d="M16.2 8.6 18 6.8"/></svg>
+        </div>
+        <div class="who">兩邊各按一次</div>
+        <h3>雙向對帳，留下紀錄</h3>
+        <p>借用人標記「已投現金」，車主確認「已收款」。狀態清楚寫著在哪一步，不會有「到底付了沒」這種問題。</p>
+      </div>
+    </div>
+
+    <p class="money-note rise">
+<b>所以：住戶之間沒有抽成、沒有代收、沒有押金。</b>社區也可以把費率設成 0 元，把鄰停純粹當作車位調度與登記的工具——一樣有申請、有審核、有紀錄，只是不牽涉到錢。
+    </p>
+  </div>
+</section>
+
+<!-- ══ 三種身分 ═════════════════════════════════════════ -->
+<section class="band band-paper" id="roles">
+  <div class="wrap">
+    <div class="sec-head rise">
+      <span class="eyebrow on-light">誰會用到</span>
+      <h2 class="h2">同一套系統，三種人各拿到自己要的東西</h2>
+    </div>
+
+    <div class="grid-3">
+      <div class="role rise">
+        <div class="role-top">
+          <h3>車主</h3>
+          <p>有固定車位，但不是每天都用</p>
+        </div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>空著的時段可以設成單次或每週固定</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>每一筆申請都要你核准，不是自動開放</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>誰借、幾點到幾點、收了沒，都在紀錄裡</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>不用在群組裡跟人來回談時間</li>
+        </ul>
+      </div>
+
+      <div class="role rise">
+        <div class="role-top">
+          <h3>借用的鄰居</h3>
+          <p>沒有車位，或家裡第二台車</p>
+        </div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>看板上看到就申請，不用開口問人</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>核准與到期都有 LINE 通知，不會忘記牽車</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>金額系統算，付多付少不用彼此猜</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>停在自己社區裡，不用去外面找車位</li>
+        </ul>
+      </div>
+
+      <div class="role rise">
+        <div class="role-top">
+          <h3>管委會</h3>
+          <p>要管得動，也要交代得過去</p>
+        </div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>住戶加入要送申請，審核過才看得到車位</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>後台看的是真實姓名與戶號，可對照名冊</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>費率由社區設定，要不要收錢是社區的決定</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>一個社區一個帳號，訂閱與付款狀態集中管理</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FAQ ══════════════════════════════════════════════ -->
+<section class="band band-white" id="faq">
+  <div class="wrap">
+    <div class="sec-head rise" style="text-align:center; max-width:820px; margin-inline:auto; margin-bottom:20px">
+      <span class="eyebrow on-light">常見問題</span>
+    </div>
+
+    <div class="faq rise">
+      <details open>
+        <summary>住戶不會用 App，長輩會不會卡住？</summary>
+        <div class="a">不用下載 App。用 <strong>LINE 登入</strong>，借用申請、審核結果與到期提醒也都走 LINE 通知——這是大部分住戶每天已經在看的東西。想要更方便的話，可以把網站加到手機桌面，開起來就像一個 App。畫面也沒有鎖縮放，長輩要放大字看得清楚。</div>
+      </details>
+
+      <details>
+        <summary>外面的人會不會混進來停車？</summary>
+        <div class="a">加入社區要送出申請，<strong>管委會審核通過才能看到車位、才能借用</strong>。申請時填的是真實姓名與戶號，後台以真實姓名為主顯示，管理員可以直接對照區權人名冊確認身分。</div>
+      </details>
+
+      <details>
+        <summary>錢的糾紛誰負責？平台會不會碰到住戶的錢？</summary>
+        <div class="a">平台<strong>完全不經手住戶之間的金流</strong>。App 只做三件事：算出金額、指出投到哪個信箱、記錄雙方的確認。每一筆借用都留下「誰借的、幾點到幾點、多少錢、誰標記已投、誰確認已收」，這份紀錄是給雙方與管委會看的依據。</div>
+      </details>
+
+      <details>
+        <summary>我們社區規約不能出租車位，還能用嗎？</summary>
+        <div class="a">可以。<strong>費率由社區自己設定，設成 0 元就是純媒合</strong>——一樣有時段開放、有申請、有審核、有使用紀錄，只是不牽涉到錢。很多社區導入的第一階段就是這樣跑，先把「誰在什麼時候用了哪個位子」變成有紀錄的事。</div>
+      </details>
+
+      <details>
+        <summary>要幾個帳號？誰來付？</summary>
+        <div class="a"><strong>一個社區只要一個帳號訂閱即可</strong>，對象是管委會，不是住戶。住戶之間走現金、平台不抽成，所以住戶端不會有任何被收費的環節。實際方案與費用請直接透過 LINE 官方帳號洽詢，我們會依社區規模與車位數量說明。</div>
+      </details>
+
+      <details>
+        <summary>導入要花多久？我們要準備什麼？</summary>
+        <div class="a">需要的東西不多：社區名稱、棟別與戶號的格式、以及一位負責審核住戶的管理員。建立社區、設定費率之後，車主就可以開始登錄與釋出車位。第一批住戶通常從幾位常有需求的車主與鄰居開始跑，順了再往整個社區推。細節建議直接 LINE 聊，比看文件快。</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 結尾 CTA ═════════════════════════════════════════ -->
+<section class="band band-navy">
+  <div class="wrap close-in rise">
+    <span class="eyebrow">下一步</span>
+    <h2 class="h2" style="margin-top:12px">想知道你們社區適不適合？</h2>
+    <p class="lede">加 LINE 跟我們說一下戶數、車位數，還有現在遇到的狀況。我們會直接告訴你這套怎麼跑、需要準備什麼，適不適合也會直說。</p>
+    <div class="close-cta">
+      <a class="btn btn-primary" href="https://line.me/R/ti/p/@694embuk" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="19" height="19" aria-hidden="true"><path d="M12 2C6.5 2 2 5.6 2 10c0 3.9 3.5 7.2 8.2 7.9.3.07.75.22.86.5.1.26.07.66.03.92l-.14.83c-.04.25-.2.97.85.53s5.62-3.3 7.67-5.66C20.83 13.5 22 11.9 22 10c0-4.4-4.5-8-10-8Z"/></svg>
+        加入 LINE 官方帳號
+      </a>
+      <a class="btn btn-ghost" href="https://neiborpark.pages.dev/" target="_blank" rel="noopener">先看住戶端畫面 →</a>
+    </div>
+    <p class="close-sub">加入官方帳號才收得到借用申請、審核與到期通知，這也是住戶端使用的第一步。</p>
+  </div>
+</section>
+</main>
+
+<!-- ══ 頁尾 ═════════════════════════════════════════════ -->
+<footer class="foot">
+  <div class="wrap foot-in">
+    <a class="brand" href="#top" style="margin-right:0">
+      <img src="logo2.png" alt="">
+      <span style="display:block">
+        <b style="color:#fff">鄰停車位共享</b>
+        <span style="color:#6D869E">社區車位共享平台</span>
+      </span>
+    </a>
+    <div class="foot-links">
+      <a href="#how">怎麼運作</a>
+      <a href="#money">錢怎麼算</a>
+      <a href="#roles">誰會用到</a>
+      <a href="#faq">常見問題</a>
+      <a href="https://neiborpark.pages.dev/" target="_blank" rel="noopener">住戶端</a>
+      <a href="https://line.me/R/ti/p/@694embuk" target="_blank" rel="noopener">LINE 官方帳號</a>
+    </div>
+    <p class="foot-note">
+鄰停是社區內部的車位媒合與對帳工具，不是金流平台，不經手住戶之間的款項。本頁畫面為示意，實際功能以產品當前版本為準。<br>
+      © <span id="yr" class="num">2026</span> 鄰停車位共享 NeiborPark
+    </p>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // 進場：只做一次，看不到就直接顯示
+  (function () {
+    var items = document.querySelectorAll('.rise');
+    if (!('IntersectionObserver' in window) ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      items.forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+
+    items.forEach(function (el, i) {
+      el.style.transitionDelay = (Math.min(i % 4, 3) * 70) + 'ms';
+      io.observe(el);
+    });
+  })();
+</script>
+
+</body>
+</html>
