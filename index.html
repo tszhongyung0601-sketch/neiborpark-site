@@ -79,7 +79,7 @@ p{ margin:0 }
 .num{ font-variant-numeric:tabular-nums }
 
 .wrap{ width:100%; max-width:var(--wide); margin-inline:auto; padding-inline:24px }
-section[id]{ scroll-margin-top:76px }
+section[id]{ scroll-margin-top:88px }
 
 /* ── 標題群組 ─────────────────────────────── */
 .eyebrow{
@@ -122,11 +122,17 @@ section[id]{ scroll-margin-top:76px }
   -webkit-backdrop-filter:saturate(150%) blur(12px);
   border-bottom:1px solid rgba(255,255,255,.10);
 }
-.top-in{ display:flex; align-items:center; gap:20px; height:64px }
-.brand{ display:flex; align-items:center; gap:11px; text-decoration:none; margin-right:auto }
-.brand img{ width:34px; height:34px; border-radius:9px }
-.brand b{ font-family:var(--serif); font-size:17.5px; color:#fff; font-weight:700; letter-spacing:.02em }
-.brand span{ display:block; font-size:11px; color:#95AEC8; letter-spacing:.1em; line-height:1.2 }
+.top-in{ display:flex; align-items:center; gap:20px; height:76px }
+.brand{ display:flex; align-items:center; gap:13px; text-decoration:none; margin-right:auto }
+.brand img{ width:48px; height:48px; border-radius:12px }
+.brand b{ font-family:var(--serif); font-size:22px; color:#fff; font-weight:700; letter-spacing:.02em }
+.brand span{ display:block; font-size:12.5px; color:#95AEC8; letter-spacing:.11em; line-height:1.25 }
+@media (max-width:520px){
+  .top-in{ height:66px; gap:12px }
+  .brand img{ width:40px; height:40px; border-radius:10px }
+  .brand b{ font-size:18.5px }
+  .brand span{ font-size:11px }
+}
 .top nav{ display:flex; gap:26px }
 .top nav a{
   font-size:14.5px; color:#C2D2E2; text-decoration:none; font-weight:500;
@@ -136,32 +142,76 @@ section[id]{ scroll-margin-top:76px }
 @media (max-width:900px){ .top nav{ display:none } }
 
 /* ── Hero ─────────────────────────────────── */
+/* 照片釘在右邊，左邊是乾淨的深藍——文字不壓在圖上，圖也不用被壓暗才活得下去。 */
 .hero{
   position:relative; overflow:hidden;
+  min-height:748px; display:flex; align-items:center;
   background:
-    radial-gradient(1100px 620px at 82% -6%, rgba(63,191,150,.20), transparent 62%),
-    radial-gradient(900px 560px at 6% 108%, rgba(255,197,61,.14), transparent 60%),
-    linear-gradient(168deg, #0E2A4C 0%, var(--navy) 52%, #081A31 100%);
+    radial-gradient(900px 560px at 4% 104%, rgba(255,197,61,.10), transparent 62%),
+    linear-gradient(168deg, #0E2A4C 0%, var(--navy) 54%, #081A31 100%);
   color:#EAF1F8;
 }
-/* 停車格線：低調的紋理，不是裝飾圖案 */
+.hero-media{ position:absolute; inset:0 0 0 auto; width:64%; overflow:hidden; z-index:0 }
+.hero-media img{
+  width:100%; height:100%; object-fit:cover;
+  /* 駕駛落在圖的左中，右邊留給那排停滿的車 */
+  object-position:46% 42%;
+}
+/* 圖的左緣用底色化掉，接縫看不出來；右邊幾乎不壓，照片是照片 */
+.hero-media::after{
+  content:""; position:absolute; inset:0;
+  background:
+    linear-gradient(90deg,
+      #0C2340 0%,
+      rgba(12,35,64,.98) 14%,
+      rgba(12,35,64,.86) 28%,
+      rgba(12,35,64,.46) 50%,
+      rgba(12,35,64,.16) 76%,
+      rgba(12,35,64,.06) 100%),
+    linear-gradient(to bottom,
+      rgba(8,22,42,.34) 0%, transparent 18%,
+      transparent 78%, rgba(8,22,42,.40) 100%);
+}
+/* 這張照片是 AI 生成的，畫面裡的街不是真的街——標出來，不要讓它看起來像案場實拍 */
+.hero-tag{
+  position:absolute; right:16px; bottom:14px; z-index:3;
+  font-size:11px; letter-spacing:.06em; color:rgba(234,241,248,.72);
+  background:rgba(8,22,42,.46); border:1px solid rgba(255,255,255,.16);
+  padding:4px 11px; border-radius:999px;
+  backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
+}
+/* 停車格線：只鋪在左邊那塊純色上，蓋到照片上就變雜訊 */
 .hero::before{
-  content:""; position:absolute; inset:0; pointer-events:none;
+  content:""; position:absolute; inset:0 46% 0 0; z-index:1; pointer-events:none;
   background:repeating-linear-gradient(96deg,
-    rgba(255,255,255,.055) 0 1px, transparent 1px 128px);
+    rgba(255,255,255,.05) 0 1px, transparent 1px 128px);
   mask-image:linear-gradient(to bottom, transparent, #000 22%, #000 72%, transparent);
   -webkit-mask-image:linear-gradient(to bottom, transparent, #000 22%, #000 72%, transparent);
 }
-.hero-in{
-  position:relative; display:grid; gap:56px; align-items:center;
-  grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);
-  padding-block:clamp(64px,8vw,104px) clamp(72px,9vw,116px);
-}
+.hero-in{ position:relative; z-index:2; padding-block:96px }
+.hero-copy{ max-width:566px }
+
+/* 單欄之後，照片改成上方橫幅，往下淡進深藍——文字仍然不壓在圖上 */
 @media (max-width:940px){
-  .hero-in{ grid-template-columns:1fr; gap:48px; padding-block:56px 64px }
+  .hero{ min-height:auto; display:block }
+  .hero-media{
+    position:relative; inset:auto; width:100%;
+    height:clamp(230px,56vw,360px);
+  }
+  .hero-media img{ object-position:52% 42% }
+  .hero-media::after{
+    background:linear-gradient(to bottom,
+      rgba(12,35,64,.10) 0%,
+      rgba(12,35,64,.26) 46%,
+      rgba(12,35,64,.80) 84%,
+      #0C2340 100%);
+  }
+  .hero::before{ display:none }
+  .hero-in{ padding-block:28px 60px }
+  .hero-copy{ max-width:none }
 }
 .hero h1{
-  font-size:clamp(27.5px,4.35vw,50px); line-height:1.28; color:#fff;
+  font-size:clamp(27.5px,4.05vw,46px); line-height:1.3; color:#fff;
   margin-block:16px 22px; letter-spacing:-.005em;
 }
 .hero h1 em{ font-style:normal; color:var(--amber) }
@@ -181,10 +231,28 @@ section[id]{ scroll-margin-top:76px }
 
 /* 手機示意 */
 .phone-stage{ display:flex; justify-content:center; perspective:1400px }
+
+/* ── 住戶端區塊 ───────────────────────────── */
+.app-grid{
+  display:grid; gap:60px; align-items:center;
+  grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);
+}
+@media (max-width:880px){ .app-grid{ grid-template-columns:1fr; gap:40px } }
+.app-art{ display:flex; justify-content:center }
+.app-points{ list-style:none; margin:26px 0 30px; padding:0; display:grid; gap:13px }
+.app-points li{
+  position:relative; padding-left:19px;
+  font-size:15.5px; color:var(--ink-2); line-height:1.8;
+}
+.app-points li::before{
+  content:""; position:absolute; left:0; top:11px;
+  width:7px; height:7px; border-radius:50%; background:var(--amber-2);
+}
 .phone{
   width:min(320px,100%); border-radius:38px; padding:11px;
   background:linear-gradient(160deg,#33465C,#16202D 60%);
-  box-shadow:var(--shadow-lg), 0 0 0 1px rgba(255,255,255,.10) inset;
+  box-shadow:0 32px 72px rgba(12,35,64,.26), 0 6px 18px rgba(12,35,64,.12),
+             0 0 0 1px rgba(255,255,255,.10) inset;
   transform:rotate(-1.6deg);
 }
 .screen{ background:var(--paper); border-radius:29px; overflow:hidden; color:var(--ink) }
@@ -388,9 +456,13 @@ section[id]{ scroll-margin-top:76px }
 <!-- ══ Hero ═════════════════════════════════════════════ -->
 <main id="top">
 <section class="hero">
-  <div class="wrap hero-in">
+  <div class="hero-media">
+    <img src="hero.jpg" alt="下午的台灣住宅區街道，駕駛沿著停滿車的路邊緩行找車位。" fetchpriority="high" decoding="async">
+    <span class="hero-tag">AI 生成示意</span>
+  </div>
 
-    <div>
+  <div class="wrap hero-in">
+    <div class="hero-copy">
       <p class="eyebrow">社區內部 · 車位共享</p>
       <h1>白天空著的那個車位，<br>晚上有人正在繞<span class="nb"><em>第三圈</em>。</span></h1>
       <p class="hero-lede">
@@ -421,7 +493,21 @@ section[id]{ scroll-margin-top:76px }
       </div>
     </div>
 
-    <!-- 住戶端示意 -->
+  </div>
+</section>
+
+<!-- ══ 一句話 ═══════════════════════════════════════════ -->
+<div class="oneline">
+  <div class="wrap oneline-in">
+    <p>鄰停是社區內部的<mark>車位媒合與對帳工具</mark>，不是金流平台。</p>
+    <span>平台只跟管委會收訂閱費，住戶之間的現金往來完全不經手、不抽成、不代收。</span>
+  </div>
+</div>
+
+<!-- ══ 住戶端 ═══════════════════════════════════════════ -->
+<section class="band band-paper" id="app">
+  <div class="wrap app-grid">
+    <div class="app-art rise">
     <div class="phone-stage">
       <div class="phone" role="img" aria-label="住戶端「即時車位看板」畫面示意：拖動時間到今晚 21:00，看板上出現兩個可借車位。">
         <div class="screen">
@@ -445,26 +531,30 @@ section[id]{ scroll-margin-top:76px }
             </div>
             <div class="demo-tag">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.6v.1"/></svg>
-畫面為示範資料。社區還沒有人釋出車位時，看板也會這樣先給你看。
+  畫面為示範資料。社區還沒有人釋出車位時，看板也會這樣先給你看。
             </div>
           </div>
         </div>
       </div>
     </div>
+    </div>
 
+    <div class="rise">
+      <span class="eyebrow on-light">住戶端</span>
+      <h2 class="h2" style="margin-top:12px">住戶看到的，就是這一頁</h2>
+      <p class="lede" style="margin-top:16px">LINE 登入之後第一眼就是即時車位看板。它只顯示現在真的借得到的時段——拖動時間軸，就能查「今晚 21:00 有沒有位子」。</p>
+      <ul class="app-points">
+        <li>看板上有的，都是車主真的開放出來的時段，不是登記過的車位清單</li>
+        <li>送出申請、車主核准、借用到期，三個節點都有 LINE 通知</li>
+        <li>不用下載 App。想要的話可以把網站加到手機桌面，開起來就像一個 App</li>
+      </ul>
+      <a class="btn btn-outline" href="https://neiborpark.pages.dev/" target="_blank" rel="noopener">看住戶端實際畫面 →</a>
+    </div>
   </div>
 </section>
 
-<!-- ══ 一句話 ═══════════════════════════════════════════ -->
-<div class="oneline">
-  <div class="wrap oneline-in">
-    <p>鄰停是社區內部的<mark>車位媒合與對帳工具</mark>，不是金流平台。</p>
-    <span>平台只跟管委會收訂閱費，住戶之間的現金往來完全不經手、不抽成、不代收。</span>
-  </div>
-</div>
-
 <!-- ══ 痛點 ═════════════════════════════════════════════ -->
-<section class="band band-paper">
+<section class="band band-white">
   <div class="wrap">
     <div class="sec-head rise">
       <span class="eyebrow on-light">現況</span>
@@ -501,7 +591,7 @@ section[id]{ scroll-margin-top:76px }
 </section>
 
 <!-- ══ 怎麼運作 ═════════════════════════════════════════ -->
-<section class="band band-white" id="how">
+<section class="band band-paper" id="how">
   <div class="wrap">
     <div class="sec-head rise">
       <span class="eyebrow on-light">怎麼運作</span>
